@@ -108,6 +108,15 @@ local update = throttle(function()
 
   assert(context_lines)
 
+  file = io.open('/tmp/test.log', 'a')
+  file:write('winid: ' .. winid .. '\n')
+  file:write('bufnr: ' .. bufnr .. '\n')
+  -- file.write('can_open' .. tostring(can_open(bufnr, winid)))
+  -- file.write(can_open(bufnr, winid))
+  file:write('\n')
+
+  file:close()
+
   open(bufnr, winid, context, context_lines)
 end)
 
@@ -189,7 +198,11 @@ local function init()
   api.nvim_set_hl(0, 'TreesitterContext', { link = 'NormalFloat', default = true })
   api.nvim_set_hl(0, 'TreesitterContextLineNumber', { link = 'LineNr', default = true })
   api.nvim_set_hl(0, 'TreesitterContextBottom', { link = 'NONE', default = true })
-  api.nvim_set_hl(0, 'TreesitterContextLineNumberBottom', { link = 'TreesitterContextBottom', default = true })
+  api.nvim_set_hl(
+    0,
+    'TreesitterContextLineNumberBottom',
+    { link = 'TreesitterContextBottom', default = true }
+  )
   api.nvim_set_hl(0, 'TreesitterContextSeparator', { link = 'FloatBorder', default = true })
 end
 

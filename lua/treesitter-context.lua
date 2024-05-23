@@ -93,10 +93,10 @@ local update = throttle(function()
   local bufnr = api.nvim_get_current_buf()
   local winid = api.nvim_get_current_win()
 
-  if not can_open(bufnr, winid) then
-    close()
-    return
-  end
+  -- if not can_open(bufnr, winid) then
+  --   close()
+  --   return
+  -- end
 
   local context, context_lines = get_context(bufnr, winid)
   all_contexts[bufnr] = context
@@ -111,8 +111,18 @@ local update = throttle(function()
   file = io.open('/tmp/test.log', 'a')
   file:write('winid: ' .. winid .. '\n')
   file:write('bufnr: ' .. bufnr .. '\n')
-  -- file.write('can_open' .. tostring(can_open(bufnr, winid)))
-  -- file.write(can_open(bufnr, winid))
+  file:write('can_open: ' .. tostring(can_open(bufnr, winid)) .. '\n')
+  file:write('context: ' .. tostring(context) .. '\n')
+  for k, v in pairs(context) do
+    file:write('context key' .. tostring(k) .. ': ' .. '\n')
+    for key, val in pairs(v) do
+      file:write('context value' .. tostring(val) .. '\n')
+    end
+  end
+  file:write('context_lines: ' .. tostring(context_lines) .. '\n')
+  for k, v in pairs(context_lines) do
+    file:write(tostring(k) .. ': ' .. v .. '\n')
+  end
   file:write('\n')
 
   file:close()

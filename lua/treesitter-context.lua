@@ -116,7 +116,7 @@ local update = throttle(function()
   for k, v in pairs(context) do
     file:write('context key' .. tostring(k) .. ': ' .. '\n')
     for key, val in pairs(v) do
-      file:write('context value' .. tostring(val) .. '\n')
+      file:write('context value: ' .. tostring(val) .. '\n')
     end
   end
   file:write('context_lines: ' .. tostring(context_lines) .. '\n')

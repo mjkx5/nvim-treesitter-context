@@ -215,7 +215,7 @@ local function build_lno_str(win, lnum, width)
       winid = win,
       use_statuscol_lnum = lnum,
       highlights = true,
-      fillchar = ' ',  -- Fixed in Neovim 0.10 (#396)
+      fillchar = ' ', -- Fixed in Neovim 0.10 (#396)
     })
     if ok then
       return data.str, data.highlights
@@ -340,6 +340,10 @@ function M.open(bufnr, winid, ctx_ranges, ctx_lines)
 
   local gbufnr, ctx_bufnr = get_bufs()
 
+  file = io.open('/tmp/render_1.log', 'a')
+  file:write('gbufnr: ' .. gbufnr .. '\n')
+  file:write('ctx_bufnr: ' .. ctx_bufnr .. '\n')
+
   if config.line_numbers and (vim.wo[winid].number or vim.wo[winid].relativenumber) then
     gutter_winid = display_window(
       gbufnr,
@@ -350,6 +354,7 @@ function M.open(bufnr, winid, ctx_ranges, ctx_lines)
       'treesitter_context_line_number',
       'TreesitterContextLineNumber'
     )
+    file:write('gutter_winid first: ' .. gutter_winid .. '\n')
     render_lno(winid, gbufnr, ctx_ranges, gutter_width)
   else
     win_close(gutter_winid)
@@ -364,7 +369,13 @@ function M.open(bufnr, winid, ctx_ranges, ctx_lines)
     'treesitter_context',
     'TreesitterContext'
   )
+  file:write('context_winid first: ' .. context_winid .. '\n')
+  file:write('gbufnr: ' .. gbufnr .. '\n')
+  file:write('gutter_winid second: ' .. gutter_winid .. '\n')
+  file:write('ctx_bufnr: ' .. ctx_bufnr .. '\n')
+  file:write('context_winid second: ' .. context_winid .. '\n')
 
+  file:write('\n')
   if not set_lines(ctx_bufnr, ctx_lines) then
     -- Context didn't change, can return here
     return

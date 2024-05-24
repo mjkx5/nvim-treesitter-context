@@ -1,4 +1,3 @@
-
 --- @class (exact) TSContext.Config
 --- @field enable boolean
 --- @field max_lines integer
@@ -47,7 +46,7 @@ local default_config = {
   enable = true,
   max_lines = 0, -- no limit
   min_window_height = 0,
-  line_numbers = true,
+  line_numbers = false,
   multiline_threshold = 20,
   trim_scope = 'outer',
   zindex = 20,
@@ -67,7 +66,7 @@ end
 setmetatable(M, {
   __index = function(_, k)
     return config[k]
-  end
+  end,
 })
 
 return M

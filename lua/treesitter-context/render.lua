@@ -46,6 +46,7 @@ end
 --- @param hl string
 --- @return integer
 local function display_window(bufnr, winid, width, height, col, ty, hl)
+  file_2 = io.open('/tmp/render_2.log', 'a')
   if not winid or not api.nvim_win_is_valid(winid) then
     local sep = config.separator and { config.separator, 'TreesitterContextSeparator' } or nil
     winid = api.nvim_open_win(bufnr, false, {
@@ -64,6 +65,8 @@ local function display_window(bufnr, winid, width, height, col, ty, hl)
     vim.wo[winid].wrap = false
     vim.wo[winid].foldenable = false
     vim.wo[winid].winhl = 'NormalFloat:' .. hl
+
+    file_2:write('if path')
   else
     api.nvim_win_set_config(winid, {
       win = api.nvim_get_current_win(),
@@ -73,6 +76,7 @@ local function display_window(bufnr, winid, width, height, col, ty, hl)
       row = 0,
       col = col,
     })
+    file_2:write('else path')
   end
   return winid
 end
@@ -341,24 +345,25 @@ function M.open(bufnr, winid, ctx_ranges, ctx_lines)
   local gbufnr, ctx_bufnr = get_bufs()
 
   file = io.open('/tmp/render_1.log', 'a')
+  file:write('winid: ' .. winid .. '\n')
   file:write('gbufnr: ' .. gbufnr .. '\n')
   file:write('ctx_bufnr: ' .. ctx_bufnr .. '\n')
 
-  if config.line_numbers and (vim.wo[winid].number or vim.wo[winid].relativenumber) then
-    gutter_winid = display_window(
-      gbufnr,
-      gutter_winid,
-      gutter_width,
-      win_height,
-      0,
-      'treesitter_context_line_number',
-      'TreesitterContextLineNumber'
-    )
-    file:write('gutter_winid first: ' .. gutter_winid .. '\n')
-    render_lno(winid, gbufnr, ctx_ranges, gutter_width)
-  else
-    win_close(gutter_winid)
-  end
+  -- if config.line_numbers and (vim.wo[winid].number or vim.wo[winid].relativenumber) then
+  --   gutter_winid = display_window(
+  --     gbufnr,
+  --     gutter_winid,
+  --     gutter_width,
+  --     win_height,
+  --     0,
+  --     'treesitter_context_line_number',
+  --     'TreesitterContextLineNumber'
+  --   )
+  --   file:write('gutter_winid first: ' .. gutter_winid .. '\n')
+  --   render_lno(winid, gbufnr, ctx_ranges, gutter_width)
+  -- else
+  --   win_close(gutter_winid)
+  -- end
 
   context_winid = display_window(
     ctx_bufnr,
@@ -371,9 +376,11 @@ function M.open(bufnr, winid, ctx_ranges, ctx_lines)
   )
   file:write('context_winid first: ' .. context_winid .. '\n')
   file:write('gbufnr: ' .. gbufnr .. '\n')
-  file:write('gutter_winid second: ' .. gutter_winid .. '\n')
   file:write('ctx_bufnr: ' .. ctx_bufnr .. '\n')
   file:write('context_winid second: ' .. context_winid .. '\n')
+  file:write('option: ' .. 'win_width: ' .. win_width .. '\n')
+  file:write('option: ' .. 'win_height: ' .. win_height .. '\n')
+  file:write('option: ' .. 'gutter_width: ' .. gutter_width .. '\n')
 
   file:write('\n')
   if not set_lines(ctx_bufnr, ctx_lines) then

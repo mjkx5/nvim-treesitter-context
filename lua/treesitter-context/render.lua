@@ -57,9 +57,9 @@ local function display_window(bufnr, winid, width, height, col, ty, hl)
       col = col,
       focusable = false,
       style = 'minimal',
-      noautocmd = true,
+      noautocmd = false,
       zindex = config.zindex,
-      border = sep and { '', '', '', '', sep, sep, sep, '' } or nil,
+      -- border = sep and { '', '', '', '', sep, sep, sep, '' } or nil,
     })
     vim.w[winid][ty] = true
     vim.wo[winid].wrap = false
